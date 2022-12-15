@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { jwtConstants } from './constants';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class AccessTokenStrategy extends PassportStrategy(Strategy,"jwt") {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -17,6 +17,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     console.log("validate jwt payload");
     console.log(payload);
     // return payload;
-    return { userId: payload.sub, username: payload.username };
+    return { userId: payload.sub, username: payload.username,roles:payload.roles };
   }
 }

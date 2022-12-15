@@ -8,7 +8,7 @@ import {
   Param,
   Logger,
 } from "@nestjs/common";
-import { CreateUserDto } from "./dto/create-user.dto";
+// import { CreateUserDto } from "./dto/user.dto";
 import { UsersService } from "./users.service";
 import { User } from "./interfaces/user.interface";
 import { LocalAuthGuard } from "src/auth/local-auth.guard";
@@ -43,16 +43,16 @@ export class UsersController {
     return this.usersService.findOne(email);
   }
 
-  @Put(":email")
-  updateUser(
-    @Param("email") email,
-    @Body() updateUser: CreateUserDto
-  ): Promise<User> {
-    return this.usersService.updateUser(email, updateUser);
-  }
+  // @Put(":email")
+  // updateUser(
+  //   @Param("email") email,
+  //   @Body() updateUser: CreateUserDto
+  // ): Promise<User> {
+  //   return this.usersService.updateUser(email, updateUser);
+  // }
 
-  @Delete(":email")
-  deleteUser(@Param("email") email): Promise<User> {
-    return this.usersService.deleteUser(email);
-  }
+  // @Delete(":email")
+  // deleteUser(@Param("email") email): Promise<User> {
+  //   return this.usersService.deleteUser(email);
+  // }
 }

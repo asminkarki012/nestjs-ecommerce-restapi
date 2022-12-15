@@ -1,6 +1,7 @@
-export class CreateUserDto {
+export class RegisterUserDto {
   readonly email:string;
-  readonly password:string 
+  password:string ;
+  roles:string[];
 }
 
 export class LoginUserDto{

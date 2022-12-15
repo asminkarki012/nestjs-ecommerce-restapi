@@ -8,6 +8,8 @@ import { UsersModule } from "./users/users.module";
 import { MongooseModule } from "@nestjs/mongoose";
 import { AuthModule } from './auth/auth.module';
 import config from "./config/keys";
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from "./auth/roles.guard";
 
 @Module({
   imports: [UsersModule,ItemsModule, MongooseModule.forRoot(config.mongoURI), AuthModule],
