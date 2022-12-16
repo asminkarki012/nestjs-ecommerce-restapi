@@ -36,6 +36,11 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @Get("/checking")
+  Checking():void {
+    console.log("CHECKING ROUTE");
+  }
+
   // @UseGuards(AuthGuard('local'))
   @Get(":email")
   findOne(@Param("email") email): Promise<User> {

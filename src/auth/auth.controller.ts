@@ -14,11 +14,11 @@ import { UseGuards } from "@nestjs/common";
 import { LocalAuthGuard } from "./local-auth.guard";
 import { RegisterUserDto } from "src/users/dto/user.dto";
 import { User } from "src/users/interfaces/user.interface";
-import { JwtAuthGuard } from "./jwt-auth.guard";
+import { AccessTokenGuard } from "./accessToken.guard";
+import { RefreshTokenGuard } from "./refreshToken.guard";
 import { Roles } from "./roles.decorator";
 import { Role } from "./role.enum";
 import { RolesGuard } from "./roles.guard";
-
 @Controller("/api/auth/users")
 export class AuthController {
   private readonly logger = new Logger();
@@ -37,14 +37,13 @@ export class AuthController {
   @Post("/login")
   login(@Request() req): any {
     // information are stored in request
-    // const user = await this.userService.findOne(LoginDTO.email);
     console.log("login route");
     //return everything except password
     const { password, ...result } = req.user._doc;
     // return result;
     return this.authService.login(result);
   }
-  @UseGuards(JwtAuthGuard,RolesGuard)
+  @UseGuards(AccessTokenGuard,RolesGuard)
   @Roles(Role.Admin)
   @Get("/getallusers")
   findAll(): Promise<User[]> {
@@ -52,10 +51,24 @@ export class AuthController {
     return this.usersService.findAll();
   }
 
+  @UseGuards(AccessTokenGuard,RolesGuard)
+  @Roles(Role.User)
   @Get(":email")
   findOne(@Param("email") email):Promise<User>{
     console.log("get one user route");
     return this.usersService.findOne(email);
+  }
+
+//route to get access token from refresh token
+  @UseGuards(RefreshTokenGuard)
+  @Get('/getaccesstoken/token')
+  refreshTokens(@Request() req):any {
+
+    console.log("in getaccesstoken route");
+    console.log(req.user);
+    const {refreshToken,...payload} = req.user;
+    console.log(payload,refreshToken)
+   return this.authService.refreshTokens(payload,refreshToken);
   }
 
 }
