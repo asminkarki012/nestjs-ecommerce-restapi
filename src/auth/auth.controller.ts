@@ -93,8 +93,7 @@ export class AuthController {
     return this.usersService.deleteUser(email);
   }
 
-@UseGuards(AccessTokenGuard,RolesGuard)
-@Roles(Role.User)
+
 @Put("options/changeuserpassword")
 changePassword(@Body() changePassword:ChangePasswordDto):Promise<object>{
   console.log("change password route working");
