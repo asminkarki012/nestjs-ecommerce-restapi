@@ -22,6 +22,7 @@ import { Roles } from "./roles.decorator";
 import { Role } from "./role.enum";
 import { RolesGuard } from "./roles.guard";
 import { ChangePasswordDto } from "./dto/changepassword.dto";
+import { Req } from "@nestjs/common/decorators";
 @Controller("/api/auth/users")
 export class AuthController {
   private readonly logger = new Logger();
@@ -96,10 +97,12 @@ export class AuthController {
 @UseGuards(AccessTokenGuard,RolesGuard)
 @Roles(Role.User)
 @Put("options/changeuserpassword")
-changePassword(@Body() changePassword:ChangePasswordDto):Promise<object>{
+changePassword(@Body() changePassword:ChangePasswordDto,@Req() req):Promise<object>{
   console.log("change password route working");
   console.log(changePassword);
-  return this.authService.changePassword(changePassword);
+  console.log(typeof(changePassword));
+  const {...payload}= req.user;
+  return this.authService.changePassword(payload,changePassword);
 
 }
 

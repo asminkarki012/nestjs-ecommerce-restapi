@@ -78,11 +78,11 @@ export class AuthService {
     }
   }
 
-  async changePassword(changePassword: any):Promise<Object> {
+  async changePassword(payload:any,changePassword:any):Promise<Object> {
     console.log("changePassword function working");
-
+    console.log(payload);
     //for future update use access token payload to get email
-    const user = await this.usersService.findOne(changePassword.email);
+    const user = await this.usersService.findOne(payload.username);
     if (!user) {
       return new NotFoundException();
     }
