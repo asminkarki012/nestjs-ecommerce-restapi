@@ -9,7 +9,7 @@ import { jwtConstants } from './constants';
 import { AccessTokenStrategy} from './accessToken.strategy';
 import { RefreshTokenStrategy } from './refreshToken.strategy';
 @Module({
-  imports:[PassportModule,UsersModule,JwtModule.register({})],
+  imports:[UsersModule,PassportModule,JwtModule.register({})],
   providers: [AuthService,LocalStrategy,AccessTokenStrategy,RefreshTokenStrategy],
   exports:[AuthService],
   controllers: [AuthController]

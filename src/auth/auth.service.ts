@@ -1,11 +1,15 @@
-import { Injectable, Logger, ForbiddenException } from "@nestjs/common";
+import {
+  Injectable,
+  Logger,
+  ForbiddenException,
+  NotFoundException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UsersService } from "src/users/users.service";
 import * as bcrypt from "bcrypt";
 import { jwtConstants } from "./constants";
-// import { User } from 'src/users/interfaces/user.interface';
-// import { Body } from '@nestjs/common/decorators';
-// import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { response } from "express";
 
 @Injectable()
 export class AuthService {
@@ -41,9 +45,6 @@ export class AuthService {
     this.tokenList[tokens.refreshToken] = tokens;
     // console.log(this.tokenList);
     return tokens;
-    // return {
-    //   access_token: this.jwtService.sign(payload),
-    // };
   }
 
   async getTokens(payload: any) {
@@ -65,15 +66,47 @@ export class AuthService {
     };
   }
 
-  async refreshTokens(payload: any, refreshToken: string) {
+  async refreshTokens(payload: any, refreshToken: string): Promise<object> {
     console.log("Running refreshtokens function");
     console.log(refreshToken);
-    const {iat,exp,...data} = payload
+    const { iat, exp, ...data } = payload;
     if (refreshToken in this.tokenList) {
       const tokens = await this.getTokens(data);
       return { access_token: tokens.accessToken };
     } else {
       throw new ForbiddenException("Access Denied");
     }
+  }
+
+  async changePassword(changePassword: any):Promise<Object> {
+    console.log("changePassword function working");
+
+    //for future update use access token payload to get email
+    const user = await this.usersService.findOne(changePassword.email);
+    if (!user) {
+      return new NotFoundException();
+    }
+    const oldpassword = changePassword.oldpassword;
+    const validated = await bcrypt.compare(oldpassword, user.password);
+    console.log(validated);
+    if (!validated) {
+      return new UnauthorizedException();
+    }
+    const newpassword = changePassword.newpassword;
+    const confirmpassword = changePassword.confirmpassword;
+    if (newpassword !== confirmpassword) {
+      return response
+        .status(401)
+        .json({ message: "New password doesnot match with confirm password" });
+    }
+
+    const newhashedPass = await bcrypt.hash(confirmpassword, 10);
+    const updatedPasswordUser = await this.usersService.updatePassword(
+      user.email,
+      newhashedPass
+    );
+
+    console.log(updatedPasswordUser);
+    return updatedPasswordUser;
   }
 }

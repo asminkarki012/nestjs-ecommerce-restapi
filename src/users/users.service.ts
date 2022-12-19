@@ -4,12 +4,12 @@ import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { RegisterUserDto } from "./dto/user.dto";
 import * as bcrypt from "bcrypt";
-// import { RegisterUserDto } from "./dto/user.dto";
+import { UserDocument } from "./schemas/user.schema";
 
 @Injectable()
 export class UsersService {
   logger: Logger;
-  constructor(@InjectModel("User") private readonly userModel: Model<User>) {
+  constructor(@InjectModel("User") private readonly userModel: Model<UserDocument>) {
     this.logger = new Logger();
   }
 
@@ -21,7 +21,7 @@ export class UsersService {
   async findOne(email: string): Promise<User> {
     console.log("findOne function");
     const user = await this.userModel.findOne({ email: email });
-    return user
+    return user;
 
   }
 
@@ -51,12 +51,25 @@ export class UsersService {
   }
 
   async updateUser(email: string, user: User): Promise<User> {
-    return await this.userModel.findByIdAndUpdate(
+    const updateUser = await this.userModel.findOneAndUpdate(
       { email: email },
       {
         $set: user,
       },
       { new: true }
     );
+    const{password,...result} = updateUser;
+    return result;
   }
+
+  async updatePassword(email:string,newhashedPass:string){
+
+    const updatedPasswordUser = await this.userModel.findOneAndUpdate(
+      {email:email,
+        $set: { password: newhashedPass },
+      },
+      { new: true }
+    );
+    return updatedPasswordUser
+    }
 }

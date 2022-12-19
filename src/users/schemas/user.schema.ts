@@ -1,5 +1,3 @@
-import * as mongoose from "mongoose";
-// import { Role } from "src/auth/enums/role.enum";
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { Role } from "src/auth/role.enum";
@@ -18,6 +16,16 @@ export class User {
 
   @Prop({default:"user"})
   roles: Role[];
+
+  @Prop()
+  otp:string
+
+  @Prop({default:Date.now()})
+  otpexpiresAt:Number
+
+  @Prop({default:false}) //when true user can login else cannot login
+  active:Boolean;
+
 
 }
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -3,6 +3,8 @@ import {
   Body,
   Post,
   Get,
+  Put,
+  Delete,
   Logger,
   Param,
   Request,
@@ -19,6 +21,7 @@ import { RefreshTokenGuard } from "./refreshToken.guard";
 import { Roles } from "./roles.decorator";
 import { Role } from "./role.enum";
 import { RolesGuard } from "./roles.guard";
+import { ChangePasswordDto } from "./dto/changepassword.dto";
 @Controller("/api/auth/users")
 export class AuthController {
   private readonly logger = new Logger();
@@ -40,9 +43,10 @@ export class AuthController {
     console.log("login route");
     //return everything except password
     const { password, ...result } = req.user._doc;
-    // return result;
+
     return this.authService.login(result);
   }
+
   @UseGuards(AccessTokenGuard,RolesGuard)
   @Roles(Role.Admin)
   @Get("/getallusers")
@@ -61,7 +65,7 @@ export class AuthController {
 
 //route to get access token from refresh token
   @UseGuards(RefreshTokenGuard)
-  @Get('/getaccesstoken/token')
+  @Get('/options/accesstoken')
   refreshTokens(@Request() req):any {
 
     console.log("in getaccesstoken route");
@@ -70,5 +74,33 @@ export class AuthController {
     console.log(payload,refreshToken)
    return this.authService.refreshTokens(payload,refreshToken);
   }
+
+  @UseGuards(AccessTokenGuard,RolesGuard)
+  @Roles(Role.User)
+  @Put(":email")
+  updateUser(
+    @Param("email") email,
+    @Body() updateUser: RegisterUserDto
+  ): Promise<User> {
+    return this.usersService.updateUser(email, updateUser);
+  }
+
+
+  @UseGuards(AccessTokenGuard,RolesGuard)
+  @Roles(Role.Admin)
+  @Delete(":email")
+  deleteUser(@Param("email") email): Promise<User> {
+    return this.usersService.deleteUser(email);
+  }
+
+@UseGuards(AccessTokenGuard,RolesGuard)
+@Roles(Role.User)
+@Put("options/changeuserpassword")
+changePassword(@Body() changePassword:ChangePasswordDto):Promise<object>{
+  console.log("change password route working");
+  console.log(changePassword);
+  return this.authService.changePassword(changePassword);
+
+}
 
 }
