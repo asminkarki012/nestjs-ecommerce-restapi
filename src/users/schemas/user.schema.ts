@@ -18,10 +18,16 @@ export class User {
   roles: Role[];
 
   @Prop()
-  otp:string
+  otp:Number;
+
+  @Prop()
+  forgotPasswordOtp:Number;
+
+  @Prop()
+  forgotPasswordOtpExpiresAt:Number;
 
   @Prop({default:Date.now()})
-  otpexpiresAt:Number
+  otpExpiresAt:Number
 
   @Prop({default:false}) //when true user can login else cannot login
   active:Boolean;

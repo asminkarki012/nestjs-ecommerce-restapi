@@ -3,4 +3,7 @@ export interface User {
   email:string;
   password?:string;
   roles:string[];
+  otpExpiresAt?:any;
+  otp?:Number;
+  active:Boolean;
 }

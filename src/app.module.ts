@@ -8,9 +8,21 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { AuthModule } from './auth/auth.module';
 import config from "./config/keys";
 import { ProductsModule } from './products/products.module';
+import { MailerModule } from "@nestjs-modules/mailer";
+
 
 @Module({
-  imports: [UsersModule, MongooseModule.forRoot(config.mongoURI), AuthModule, ProductsModule],
+  imports: [UsersModule, MongooseModule.forRoot(config.mongoURI), AuthModule,MailerModule.forRoot({
+    transport:{
+      service:"gmail",
+      host:"smtp.gmail.com",
+      secure:false,
+      auth:{
+        user:config.GMAIL_ACC,
+        pass:config.GMAIL_PASS
+      }
+    }
+  }) ,ProductsModule],
   controllers: [AppController],
   providers: [AppService],
 })

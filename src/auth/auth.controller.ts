@@ -23,6 +23,7 @@ import { Role } from "./role.enum";
 import { RolesGuard } from "./roles.guard";
 import { ChangePasswordDto } from "./dto/changepassword.dto";
 import { Req } from "@nestjs/common/decorators";
+import { OtpDto } from "./dto/verifyotp.dto";
 @Controller("/api/auth/users")
 export class AuthController {
   private readonly logger = new Logger();
@@ -34,7 +35,11 @@ export class AuthController {
   @Post("/register")
   registerUser(@Body() registerUserDto: RegisterUserDto): Promise<User> {
     console.log("register route");
-    return this.usersService.registerUser(registerUserDto);
+    //send otp to user
+
+    this.usersService.registerUser(registerUserDto);
+  return  this.authService.mailer(registerUserDto.email);
+    
   }
 
   @UseGuards(LocalAuthGuard)
@@ -103,6 +108,32 @@ changePassword(@Body() changePassword:ChangePasswordDto,@Req() req):Promise<obje
   console.log(typeof(changePassword));
   const {...payload}= req.user;
   return this.authService.changePassword(payload,changePassword);
+
+}
+
+@Post("/options/verifyotp")
+otpVerify(@Body() verifyOtp:OtpDto):Promise<string>{
+  console.log("verify otp route");
+  console.log(verifyOtp.email);
+  console.log(verifyOtp.otp);
+  return this.authService.otpVerify(verifyOtp.email,verifyOtp.otp);
+}
+
+
+@Post("/options/resendotp")
+resendOtp(@Body() Otp:OtpDto):Promise<string>{
+  console.log("resend otp route");
+  return this.authService.mailer(Otp.email);
+}
+
+@Post("/options/forgotpassword")
+forgotPassword(){
+//resetpassword via resetpassword otp 
+//first validate the resetpassword otp it expires in 1 minute
+//then change go to resetpassword route
+
+
+
 
 }
 
