@@ -23,7 +23,8 @@ import { Role } from "./role.enum";
 import { RolesGuard } from "./roles.guard";
 import { ChangePasswordDto } from "./dto/changepassword.dto";
 import { Req } from "@nestjs/common/decorators";
-import { OtpDto } from "./dto/verifyotp.dto";
+import { OtpDto } from "./dto/otp.dto";
+import { ForgotPasswordDto } from "./dto/forgotpassword.dto";
 @Controller("/api/auth/users")
 export class AuthController {
   private readonly logger = new Logger();
@@ -126,15 +127,23 @@ resendOtp(@Body() Otp:OtpDto):Promise<string>{
   return this.authService.mailer(Otp.email);
 }
 
+@Post("/options/sendforgotpasswordotp")
+sendForgotPasswordOtp(@Body() Otp:OtpDto):Promise<string>{
+  console.log("sendforgotpasswordotp route");
+  return this.authService.forgotPasswordMailer(Otp.email);
+}
+
 @Post("/options/forgotpassword")
-forgotPassword(){
+forgotPasswordOtpVerify(@Body() forgotPasswordOtp:ForgotPasswordDto){
+  console.log("forgotPassword route");
 //resetpassword via resetpassword otp 
 //first validate the resetpassword otp it expires in 1 minute
 //then change go to resetpassword route
-
+  return this.authService.forgotPasswordOtpVerify(forgotPasswordOtp);
 
 
 
 }
+
 
 }

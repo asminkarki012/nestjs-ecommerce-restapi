@@ -62,11 +62,13 @@ export class UsersService {
     return result;
   }
 
-  async updatePassword(email: string, newhashedPass: string) {
+  async updatePassword(email: string, confirmpassword: string) {
     console.log("updatePassword function in users service");
+
+    // const newhashedPass = await bcrypt.hash(confirmpassword, 10);
     const updatedPassword = await this.userModel.findOneAndUpdate(
       { email: email },
-      { $set: { password: newhashedPass } },
+      { $set: { password: confirmpassword } },
       { new: true }
     );
     return updatedPassword;
@@ -94,13 +96,26 @@ export class UsersService {
     return "Email Verification successfull";
   }
 
-  async forgotPasswordAddOtp(email:string,otp:string){
+  async forgotPasswordAddOtp(email:string,otp:number){
     console.log("add forgot password otp in user service");
-    const updatedOtp = await this.userModel.findOneAndUpdate(
+    const updatedForgotPasswordOtp = await this.userModel.findOneAndUpdate(
       { email: email },
       { $set: { forgotPasswordOtp: otp,forgotPasswordOtpExpiresAt:Date.now()} },
       { new: true }
     );
-    return updatedOtp;
+    return updatedForgotPasswordOtp;
   }
+
+
+  // async forgotPassword(email:string){
+  //   console.log("forgotPassword function in users service");
+  //   const updatedPassword = await this.userModel.findOneAndUpdate(
+  //     { email: email },
+  //     { $set: { password: newhashedPass } },
+  //     { new: true }
+  //   );
+  //   return updatedPassword;
+
+
+  // }
 }

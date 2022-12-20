@@ -1,5 +1,5 @@
 export class OtpDto {
-  readonly email?: string;
+  readonly email: string;
   otp?:number;
   forgotPasswordOtp?:number;
 }

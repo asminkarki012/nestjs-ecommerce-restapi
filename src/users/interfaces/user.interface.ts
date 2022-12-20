@@ -5,5 +5,7 @@ export interface User {
   roles:string[];
   otpExpiresAt?:any;
   otp?:Number;
+  forgotPasswordOtp?:Number;
+  forgotPasswordOtpExpiresAt?:any;
   active:Boolean;
 }

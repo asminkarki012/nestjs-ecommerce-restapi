@@ -17,14 +17,9 @@ export class User {
   @Prop({default:"user"})
   roles: Role[];
 
+  //email verification otp
   @Prop()
   otp:Number;
-
-  @Prop()
-  forgotPasswordOtp:Number;
-
-  @Prop()
-  forgotPasswordOtpExpiresAt:Number;
 
   @Prop({default:Date.now()})
   otpExpiresAt:Number
@@ -32,6 +27,12 @@ export class User {
   @Prop({default:false}) //when true user can login else cannot login
   active:Boolean;
 
+  //forgotpassword otp
+  @Prop()
+  forgotPasswordOtp:Number;
+
+  @Prop()
+  forgotPasswordOtpExpiresAt:Number;
 
 }
 export const UserSchema = SchemaFactory.createForClass(User);

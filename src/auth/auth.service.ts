@@ -22,8 +22,7 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    private mailService:MailerService
-
+    private mailService: MailerService
   ) {
     this.logger = new Logger("Validation logger");
   }
@@ -48,7 +47,7 @@ export class AuthService {
     console.log("JWT validation");
     console.log(user);
     console.log(user.email, user._id);
-    if(user.active !== true){
+    if (user.active !== true) {
       return "Email not Verified";
     }
     const payload = { username: user.email, sub: user._id, roles: user.roles };
@@ -89,12 +88,12 @@ export class AuthService {
     }
   }
 
-  async changePassword(payload:any,changePassword:any):Promise<Object> {
+  async changePassword(payload: any, changePassword: any): Promise<Object> {
     console.log("changePassword function working");
     console.log(payload);
     //for future update use access token payload to get email
     const user = await this.usersService.findOne(payload.username);
-    
+
     console.log(user);
     if (!user) {
       return new NotFoundException();
@@ -108,9 +107,7 @@ export class AuthService {
     const newpassword = changePassword.newpassword;
     const confirmpassword = changePassword.confirmpassword;
     if (newpassword !== confirmpassword) {
-      return response
-        .status(401)
-        .json({ message: "New password doesnot match with confirm password" });
+      return { message: "New Password doesnot match with confirmpassword" };
     }
 
     // const newhashedPass = await bcrypt.hash(confirmpassword, 10);
@@ -123,71 +120,83 @@ export class AuthService {
     return updatedPasswordUser;
   }
 
-  async mailer(recepient:string):Promise<any>{
+  async mailer(recepient: string): Promise<any> {
     console.log("authservice mailer function");
-      const otp =  Math.floor(1000 + Math.random() * 9000);
-      // const hashedOtp 
-      console.log(otp);
-      
-    await this.mailService.sendMail({
-      to:recepient,
-      from:"Testingnoreply@gmail.com",
-      subject:"OTP",
-      html:`Your OTP code is <b>${otp}</b> \n expires in 2 minutes`
-    })
+    const otp = Math.floor(1000 + Math.random() * 9000);
+    // const hashedOtp
+    console.log(otp);
 
-  return  this.usersService.addOtp(recepient,otp);
+    await this.mailService.sendMail({
+      to: recepient,
+      from: "Testingnoreply@gmail.com",
+      subject: "OTP",
+      html: `Your OTP code is <b>${otp}</b> \n expires in 2 minutes`,
+    });
+
+    return this.usersService.addOtp(recepient, otp);
   }
 
-  async otpVerify(email:string,otp:number):Promise<any>{
+  async otpVerify(email: string, otp: number): Promise<any> {
     console.log("otpVerify function in authservice");
     const user = await this.usersService.findOne(email);
     console.log(user);
     // console.log(user.otpExpiresAt-Date.now());
 
     //check otp expiration time for 2 minutes
-    if( Date.now()-user.otpExpiresAt  >= 120000){
-      return "OTP expired";
+    if (Date.now() - user.otpExpiresAt >= 120000) {
+      return { message: "OTP expired" };
     }
 
-    if(user.otp === otp){
-      return this.usersService.updateActive(user.email)
-    }else{
-      //call resend mailer function 
-      
+    if (user.otp === otp) {
+      return this.usersService.updateActive(user.email);
+    } else {
+      return { message: "Invalid OTP" };
     }
-     
-
   }
 
-  async forgotPassword(email:string,){
-    console.log("forgotpassword function in auth service");
-
-
-
-
-
-  }
-
-
-  async forgotPasswordMailer(recepient:string):Promise<any>{
+  async forgotPasswordMailer(recepient: string): Promise<any> {
     console.log("authservice mailer function");
-      const otp =  Math.floor(1000 + Math.random() * 9000);
-      // const hashedOtp 
-      console.log(otp);
-      
+    const otp = Math.floor(1000 + Math.random() * 9000);
+    // const hashedOtp
+    console.log(otp);
+
     await this.mailService.sendMail({
-      to:recepient,
-      from:"Testingnoreply@gmail.com",
-      subject:"Reset Your Password",
-      html:`Your OTP code is <b>${otp}</b> to reset password \n expires in 1 minute`
-    })
+      to: recepient,
+      from: "Testingnoreply@gmail.com",
+      subject: "Reset Your Password",
+      html: `Your OTP code is <b>${otp}</b> to reset password \n expires in 1 minute`,
+    });
 
-  return  this.usersService.addOtp(recepient,otp);
+    return this.usersService.forgotPasswordAddOtp(recepient, otp);
   }
- 
-  async forgotPasswordOtpVerify(email:string,otp:number){
 
+  async forgotPasswordOtpVerify(
+    forgotPassword: any
+  ) {
+    console.log("forgotpasswordotpVerify function in authservice");
+    const user = await this.usersService.findOne(forgotPassword.email);
+    console.log(user);
+    // console.log(user.otpExpiresAt-Date.now());
 
+    //check otp expiration time for 1 minutes
+    if (Date.now() - user.forgotPasswordOtpExpiresAt >= 60000) {
+      return { message: "OTP expired" };
+    }
+
+    if (user.forgotPasswordOtp === forgotPassword.otp) {
+      const newpassword = forgotPassword.newpassword;
+      const confirmpassword = forgotPassword.confirmpassword;
+      if (newpassword !== confirmpassword) {
+        return { message: "New Password doesnot match with confirmpassword" };
+      }
+
+      const updatedForgotPassword = await this.usersService.updatePassword(
+        user.email,
+        confirmpassword
+      );
+      return updatedForgotPassword;
+    } else {
+      return { message: "Invalid OTP" };
+    }
   }
 }
