@@ -1,5 +1,4 @@
 export interface User {
-  id?: string; //? means optional
   email:string;
   password?:string;
   roles:string[];
@@ -8,4 +7,5 @@ export interface User {
   forgotPasswordOtp?:Number;
   forgotPasswordOtpExpiresAt?:any;
   active:Boolean;
+  forgotPasswordOtpFlag?:Boolean;
 }

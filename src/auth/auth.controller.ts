@@ -133,15 +133,20 @@ sendForgotPasswordOtp(@Body() Otp:OtpDto):Promise<string>{
   return this.authService.forgotPasswordMailer(Otp.email);
 }
 
-@Post("/options/forgotpassword")
-forgotPasswordOtpVerify(@Body() forgotPasswordOtp:ForgotPasswordDto){
-  console.log("forgotPassword route");
+@Post("/options/forgotpasswordotpverify")
+forgotPasswordOtpVerify(@Body() otpDto:OtpDto){
+  console.log("forgotPasswordOtpVerify route");
 //resetpassword via resetpassword otp 
 //first validate the resetpassword otp it expires in 1 minute
 //then change go to resetpassword route
-  return this.authService.forgotPasswordOtpVerify(forgotPasswordOtp);
+  return this.authService.forgotPasswordOtpVerify(otpDto);
 
+}
 
+@Put("/options/forgotpasswordchange")
+forgotPasswordChange(@Body() forgotPassword:ForgotPasswordDto){
+  console.log("forgotPasswordchange route");
+  return this.authService.forgotPasswordChange(forgotPassword);
 
 }
 

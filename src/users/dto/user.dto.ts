@@ -3,6 +3,7 @@ export class RegisterUserDto {
   password:string ;
   roles:string[];
   active:Boolean;
+  forgotPasswordOtpFlag?:Boolean;
 
 }
 

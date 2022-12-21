@@ -1,7 +1,9 @@
 export class CreateProductDTO {
     name: string;
     description: string;
-    price: number;
+    actualprice: number;
+    discountpercent?:number;
+    discountprice:number;
     category: string;
   }
 

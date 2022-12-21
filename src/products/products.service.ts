@@ -24,4 +24,34 @@ export class ProductsService {
         return product;
       }
 
+      async getFilteredProducts(filterProductDTO: FilterProductDTO): Promise<Product[]> {
+        const { category, search } = filterProductDTO;
+        let products = await this.getAllProducts();
+    
+        if (search) {
+          products = products.filter(product => 
+            product.name.includes(search) ||
+            product.description.includes(search)
+          );
+        }
+    
+        if (category) {
+          products = products.filter(product =>product.category.includes(category) );
+        }
+    
+        return products;
+      }
+
+      async updateProduct(id: string, createProductDTO: CreateProductDTO): Promise<Product> {
+        const updatedProduct = await this.productModel
+          .findByIdAndUpdate(id, createProductDTO, { new: true });
+        return updatedProduct;
+      }
+
+      async deleteProduct(id: string): Promise<any> {
+        const deletedProduct = await this.productModel.findByIdAndRemove(id);
+        return deletedProduct;
+      }
+
+
 }

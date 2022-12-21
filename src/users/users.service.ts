@@ -79,34 +79,72 @@ export class UsersService {
     console.log("otp");
     const updatedOtp = await this.userModel.findOneAndUpdate(
       { email: email },
-      { $set: { otp: otp,otpExpiresAt:Date.now()} },
+      { $set: { otp: otp, otpExpiresAt: Date.now() } },
       { new: true }
     );
     return updatedOtp;
   }
 
-  async updateActive(email:string):Promise<String>{
+  async updateActive(email: string): Promise<String> {
     console.log("users service updateactive function");
     console.log(email);
-     await this.userModel.findOneAndUpdate(
+    await this.userModel.findOneAndUpdate(
       { email: email },
-      { $set: { active:true,otpExpiresAt:Date.now() } },
+      { $set: { active: true, otpExpiresAt: Date.now() } },
       { new: true }
     );
     return "Email Verification successfull";
   }
 
-  async forgotPasswordAddOtp(email:string,otp:number){
+  async forgotPasswordAddOtp(email: string, otp: number) {
     console.log("add forgot password otp in user service");
     const updatedForgotPasswordOtp = await this.userModel.findOneAndUpdate(
       { email: email },
-      { $set: { forgotPasswordOtp: otp,forgotPasswordOtpExpiresAt:Date.now()} },
+      {
+        $set: {
+          forgotPasswordOtp: otp,
+          forgotPasswordOtpExpiresAt: Date.now(),
+        },
+      },
       { new: true }
     );
     return updatedForgotPasswordOtp;
   }
 
+  async updateForgotPasswordFlag(email: string): Promise<object> {
+    console.log("users service updateforgotpasswordflag function");
+    console.log(email);
+    const user = await this.userModel.findOne({ email: email });
+    // user.forgotPasswordOtpFlag = true;
+    if (user.forgotPasswordOtpFlag === false) {
+      const updateForgotPasswordFlag = await user.updateOne(
+        { $set: { forgotPasswordOtpFlag: true } },
+        { new: true }
+      );
+      return {
+        message: "You can your resetpassword",
+        updateForgotPasswordFlag,
+      };
+    // } else {
+    //   const updateForgotPasswordFlag = await user.updateOne(
+    //     { $set: { forgotPasswordOtpFlag: false } },
+    //     { new: true }
+    //   );
+    //   return updateForgotPasswordFlag;
+    }
 
+  }
+
+   
+  async initialForgotPasswordFlag(email: string): Promise<object> {
+    const user = await this.userModel.findOne({ email: email });
+    // user.forgotPasswordOtpFlag = true;
+      const updateForgotPasswordFlag = await user.updateOne(
+        { $set: { forgotPasswordOtpFlag: false } },
+        { new: true }
+      );
+      return updateForgotPasswordFlag;
+      };
   // async forgotPassword(email:string){
   //   console.log("forgotPassword function in users service");
   //   const updatedPassword = await this.userModel.findOneAndUpdate(
@@ -115,7 +153,6 @@ export class UsersService {
   //     { new: true }
   //   );
   //   return updatedPassword;
-
 
   // }
 }

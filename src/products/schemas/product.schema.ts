@@ -9,8 +9,9 @@ export type ProductDocument = Product & Document;
     },
   })
 export class Product {
+
   @Prop()
-  title: string;
+  name: string;
 
   @Prop()
   description: string;

@@ -9,11 +9,7 @@ import { JwtService } from "@nestjs/jwt";
 import { UsersService } from "src/users/users.service";
 import * as bcrypt from "bcrypt";
 import { jwtConstants } from "./constants";
-import { response } from "express";
 import { MailerService } from "@nestjs-modules/mailer/dist";
-import config from "../config/keys";
-import { HttpException } from "@nestjs/common/exceptions";
-import { HttpStatus } from "@nestjs/common/enums";
 
 @Injectable()
 export class AuthService {
@@ -166,15 +162,13 @@ export class AuthService {
       subject: "Reset Your Password",
       html: `Your OTP code is <b>${otp}</b> to reset password \n expires in 1 minute`,
     });
-
+    await this.usersService.initialForgotPasswordFlag(recepient);
     return this.usersService.forgotPasswordAddOtp(recepient, otp);
   }
 
-  async forgotPasswordOtpVerify(
-    forgotPassword: any
-  ) {
+  async forgotPasswordOtpVerify(otpDto: any) {
     console.log("forgotpasswordotpVerify function in authservice");
-    const user = await this.usersService.findOne(forgotPassword.email);
+    const user = await this.usersService.findOne(otpDto.email);
     console.log(user);
     // console.log(user.otpExpiresAt-Date.now());
 
@@ -183,20 +177,42 @@ export class AuthService {
       return { message: "OTP expired" };
     }
 
-    if (user.forgotPasswordOtp === forgotPassword.otp) {
+    if (user.forgotPasswordOtp === otpDto.otp) {
+      return await this.usersService.updateForgotPasswordFlag(user.email);
+    } else {
+      // await this.usersService.updateForgotPasswordFlag(user.email);
+      return { message: "Invalid OTP" };
+    }
+  }
+
+  async forgotPasswordChange(forgotPassword: any): Promise<any> {
+    const user = await this.usersService.findOne(forgotPassword.email);
+    console.log(user.forgotPasswordOtpExpiresAt);
+    if (
+      Date.now() - user.forgotPasswordOtpExpiresAt <= 600000 &&
+      user.forgotPasswordOtpFlag === true &&
+      user.active === true
+    ) {
       const newpassword = forgotPassword.newpassword;
       const confirmpassword = forgotPassword.confirmpassword;
       if (newpassword !== confirmpassword) {
         return { message: "New Password doesnot match with confirmpassword" };
       }
-
       const updatedForgotPassword = await this.usersService.updatePassword(
         user.email,
         confirmpassword
       );
-      return updatedForgotPassword;
+      this.usersService.initialForgotPasswordFlag(user.email);
+      return {
+        message: "Forgot password updated successfully",
+      };
     } else {
-      return { message: "Invalid OTP" };
+      // const updatedForgotPassword =
+      //   await this.usersService.updateForgotPasswordFlag(user.email);
+      this.usersService.initialForgotPasswordFlag(user.email);
+      return {
+        message: "Forgot Password change time expired",
+      };
     }
   }
 }

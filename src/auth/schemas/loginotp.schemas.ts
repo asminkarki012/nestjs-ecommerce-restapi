@@ -1,50 +1,31 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+/*import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
-import { Role } from "src/auth/role.enum";
-
-export type UserDocument = User & Document;
+import { UserSchema } from "src/users/schemas/user.schema";
+import { User } from "src/users/schemas/user.schema";
+import * as mongoose from "mongoose";
+export type LoginOtpDocument = LoginOtp & Document;
 
 @Schema({
+  timestamps:true,
   toJSON: {
     virtuals: true,
   },
 })
-export class User {
-  @Prop({ required: true, unique: true })
-  email: string;
-
-  @Prop({ required: true })
-  password: string;
-
-  @Prop({ default: "user" })
-  roles: Role[];
+export class LoginOtp {
+  @Prop({ required: true, unique: true,ref:"User"})
+  userId:mongoose.Schema.Types.ObjectId; 
 
   //email verification otp
   @Prop()
   otp: Number;
 
-  @Prop({ default: Date.now() })
-  otpExpiresAt: Number;
+  @Prop({default:Date.now(),expires:"2m"})
+  createdAt:Date;
 
-  @Prop({ default: false }) //when true user can login else cannot login
-  active: Boolean;
-
-  //forgotpassword otp
-  @Prop()
-  forgotPasswordOtp: Number;
-
-  @Prop()
-  forgotPasswordOtpExpiresAt: number;
-  // @Prop({default:false})
-  @Prop()
-  forgotPasswordOtpFlag: Boolean;
 }
-
-const UserSchema = SchemaFactory.createForClass(User);
-
+const LoginOtpSchema = SchemaFactory.createForClass(LoginOtp);
 
 // UserSchema.virtual("forgotPasswordOtpFlag").get(function (this: UserDocument) {
-  
 //   if (Date.now() - this.forgotPasswordOtpExpiresAt >= 60000) {
 //     return (this.forgotPasswordOtpFlag = false);
 //   } else if (
@@ -66,4 +47,5 @@ const UserSchema = SchemaFactory.createForClass(User);
 //   },
 //   roles: { type: [String], default: "user" },
 // });
-export { UserSchema };
+export { LoginOtpSchema };
+*/

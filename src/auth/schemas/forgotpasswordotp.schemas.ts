@@ -1,8 +1,8 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+/*import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 import { Role } from "src/auth/role.enum";
 
-export type UserDocument = User & Document;
+// export type UserDocument = User & Document;
 
 @Schema({
   toJSON: {
@@ -36,24 +36,20 @@ export class User {
   @Prop()
   forgotPasswordOtpExpiresAt: number;
   // @Prop({default:false})
-  @Prop()
   forgotPasswordOtpFlag: Boolean;
 }
-
 const UserSchema = SchemaFactory.createForClass(User);
 
-
-// UserSchema.virtual("forgotPasswordOtpFlag").get(function (this: UserDocument) {
-  
-//   if (Date.now() - this.forgotPasswordOtpExpiresAt >= 60000) {
-//     return (this.forgotPasswordOtpFlag = false);
-//   } else if (
-//     this.forgotPasswordOtp &&
-//     Date.now() - this.forgotPasswordOtpExpiresAt <= 60000
-//   ) {
-//     return (this.forgotPasswordOtpFlag = true);
-//   }
-// });
+UserSchema.virtual("forgotPasswordOtpFlag").get(function (this: UserDocument) {
+  if (Date.now() - this.forgotPasswordOtpExpiresAt >= 60000) {
+    return (this.forgotPasswordOtpFlag = false);
+  } else if (
+    this.forgotPasswordOtp &&
+    Date.now() - this.forgotPasswordOtpExpiresAt <= 60000
+  ) {
+    return (this.forgotPasswordOtpFlag = true);
+  }
+});
 // export const UserSchema = new mongoose.Schema({
 //   email: {
 //     type: String,
@@ -67,3 +63,7 @@ const UserSchema = SchemaFactory.createForClass(User);
 //   roles: { type: [String], default: "user" },
 // });
 export { UserSchema };
+
+
+
+*/

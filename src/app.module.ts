@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import config from "./config/keys";
 import { ProductsModule } from './products/products.module';
 import { MailerModule } from "@nestjs-modules/mailer";
+import { CartModule } from './cart/cart.module';
 
 
 @Module({
@@ -22,7 +23,7 @@ import { MailerModule } from "@nestjs-modules/mailer";
         pass:config.GMAIL_PASS
       }
     }
-  }) ,ProductsModule],
+  }) ,ProductsModule, CartModule],
   controllers: [AppController],
   providers: [AppService],
 })
