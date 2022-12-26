@@ -13,7 +13,7 @@ import { RefreshTokenStrategy } from './refreshToken.strategy';
 @Module({
   imports:[UsersModule,PassportModule,JwtModule.register({})],
   providers: [AuthService,LocalStrategy,AccessTokenStrategy,RefreshTokenStrategy],
-  exports:[AuthService],
+  exports:[AuthService,AuthModule],
   controllers: [AuthController]
 })
 export class AuthModule {}

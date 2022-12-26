@@ -3,10 +3,11 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Cart, CartDocument } from './schemas/cart.schema';
 import { ItemDTO } from './dto/item.dto';
+import { ProductsService } from 'src/products/products.service';
 
 @Injectable()
 export class CartService {
-    constructor(@InjectModel('Cart') private readonly cartModel: Model<CartDocument>) { }
+    constructor(@InjectModel('Cart') private readonly cartModel: Model<CartDocument>,private productService:ProductsService) {}
 
 
     async createCart(userId: string, itemDTO: ItemDTO, subTotalPrice: number, totalPrice: number): Promise<Cart> {
@@ -37,13 +38,16 @@ export class CartService {
       }
 
       async addItemToCart(userId: string, itemDTO: ItemDTO): Promise<Cart> {
-        const { productId, quantity, price } = itemDTO;
+        const { productId, quantity,price } = itemDTO;
+        const product = await this.productService.getProduct(productId);
+        // const price = product.actualprice; 
         const subTotalPrice = quantity * price;
-    
         const cart = await this.getCart(userId);
+        console.log(cart);
     
         if (cart) {
           const itemIndex = cart.items.findIndex((item) => item.productId == productId);
+          console.log(itemIndex);
     
           if (itemIndex > -1) {
             let item = cart.items[itemIndex];

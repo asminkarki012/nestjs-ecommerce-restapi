@@ -22,9 +22,10 @@ import { Roles } from "./roles.decorator";
 import { Role } from "./role.enum";
 import { RolesGuard } from "./roles.guard";
 import { ChangePasswordDto } from "./dto/changepassword.dto";
-import { Req } from "@nestjs/common/decorators";
+import { Req, UploadedFile, UseInterceptors } from "@nestjs/common/decorators";
 import { OtpDto } from "./dto/otp.dto";
 import { ForgotPasswordDto } from "./dto/forgotpassword.dto";
+import { FileInterceptor } from "@nestjs/platform-express";
 @Controller("/api/auth/users")
 export class AuthController {
   private readonly logger = new Logger();
@@ -150,5 +151,9 @@ forgotPasswordChange(@Body() forgotPassword:ForgotPasswordDto){
 
 }
 
-
+@Post('/upload/profilepic')
+@UseInterceptors(FileInterceptor('file'))
+uploadFile(@UploadedFile() file: Express.Multer.File) {
+  console.log(file);
+}
 }

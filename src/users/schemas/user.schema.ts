@@ -5,9 +5,7 @@ import { Role } from "src/auth/role.enum";
 export type UserDocument = User & Document;
 
 @Schema({
-  toJSON: {
-    virtuals: true,
-  },
+ timestamps:true 
 })
 export class User {
   @Prop({ required: true, unique: true })
@@ -38,6 +36,10 @@ export class User {
   // @Prop({default:false})
   @Prop()
   forgotPasswordOtpFlag: Boolean;
+
+  @Prop()
+  profilepic:Buffer;
+
 }
 
 const UserSchema = SchemaFactory.createForClass(User);
