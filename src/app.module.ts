@@ -10,6 +10,7 @@ import config from "./config/keys";
 import { ProductsModule } from './products/products.module';
 import { MailerModule } from "@nestjs-modules/mailer";
 import { CartModule } from './cart/cart.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 
 @Module({
@@ -23,7 +24,7 @@ import { CartModule } from './cart/cart.module';
         pass:config.GMAIL_PASS
       }
     }
-  }) ,ProductsModule, CartModule],
+  }) ,ProductsModule, CartModule, CloudinaryModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -37,8 +37,8 @@ export class User {
   @Prop()
   forgotPasswordOtpFlag: Boolean;
 
-  @Prop()
-  profilepic:Buffer;
+  @Prop({type:Object})
+  profilepic:Object;
 
 }
 

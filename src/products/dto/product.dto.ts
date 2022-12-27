@@ -3,9 +3,10 @@ export class CreateProductDTO {
   name: string;
   description: string;
   actualprice: number;
-  discountpercent?: number;
+  discountpercent: number;
   // discountprice?: number;
-  category: string;
+  category: string[];
+  productimageurl?:object;
 }
 
 export class FilterProductDTO {

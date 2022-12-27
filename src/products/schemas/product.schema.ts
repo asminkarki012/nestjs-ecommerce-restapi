@@ -17,8 +17,10 @@ export class Product {
   @Prop({ max: 100, min: 0, default: 0 })
   discountpercent: number;
 
+  // @Prop()
+  // discountprice: number;
   @Prop()
-  discountprice: number;
+  productimageurl:string;
 
   @Prop()
   category: [string];

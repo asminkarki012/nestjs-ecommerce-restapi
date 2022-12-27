@@ -1,18 +1,29 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { Product, ProductDocument } from "./schemas/product.schema";
 import { CreateProductDTO } from "./dto/product.dto";
 import { FilterProductDTO } from "./dto/product.dto";
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
+import { CloudinaryService } from "src/cloudinary/cloudinary.service";
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectModel("Product")
-    private readonly productModel: Model<ProductDocument>
+    private readonly productModel: Model<ProductDocument>,
+    private cloudinary: CloudinaryService
   ) {}
 
-  async addProduct(createProductDTO: CreateProductDTO): Promise<Product> {
+  async addProduct(createProductDTO: CreateProductDTO,file:Express.Multer.File): Promise<Product> {
+    //typecasting into number since it is stored in formdata
+    createProductDTO.actualprice = Number(createProductDTO.actualprice);
+    createProductDTO.discountpercent = Number(createProductDTO.discountpercent);
+    createProductDTO.productimageurl =  await this.uploadProductPic(file);
+    console.log((createProductDTO.productimageurl));
     const newProduct = await this.productModel.create(createProductDTO);
     return newProduct.save();
   }
@@ -69,6 +80,17 @@ export class ProductsService {
   async deleteProduct(id: string): Promise<any> {
     const deletedProduct = await this.productModel.findByIdAndRemove(id);
     return deletedProduct;
+  }
+
+  async uploadProductPic(file: Express.Multer.File): Promise<object> {
+    const productPic = await this.cloudinary.uploadImage(file);
+    // console.log(productPic);
+    // const addProfilePicUrl = await this.productModel.findByIdAndUpdate(
+    //   { _id: id, $set: { profilepic: productPic.url } },
+    //   { new: true }
+    // );
+    console.log(typeof(productPic.url));
+    return productPic.url;
   }
 
   // joining table

@@ -9,9 +9,10 @@ import {JwtModule} from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { AccessTokenStrategy} from './accessToken.strategy';
 import { RefreshTokenStrategy } from './refreshToken.strategy';
+import { UserSchema } from 'src/users/schemas/user.schema';
 // import { LoginOtpSchema } from './schemas/loginotp.schemas';
 @Module({
-  imports:[UsersModule,PassportModule,JwtModule.register({})],
+  imports:[UsersModule,PassportModule,JwtModule.register({}),MongooseModule.forFeature([{ name: "User", schema: UserSchema }])],
   providers: [AuthService,LocalStrategy,AccessTokenStrategy,RefreshTokenStrategy],
   exports:[AuthService,AuthModule],
   controllers: [AuthController]
