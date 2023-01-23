@@ -9,7 +9,7 @@ export class Cart {
     @Prop({ type: SchemaTypes.ObjectId, ref: 'User' })
     userId: string;
   
-    @Prop()
+    @Prop({type:Array})
     items: Item[];
   
     @Prop()
