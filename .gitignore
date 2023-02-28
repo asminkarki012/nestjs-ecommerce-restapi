@@ -3,7 +3,8 @@
 /node_modules
 
 # keys
-/config
+/src/config/*
+
 # Logs
 logs
 *.log
