@@ -1,8 +1,6 @@
 import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
-// import { ItemsController } from "./items/items.controller";
-// import { ItemsService } from "./items/items.service";
 import { UsersModule } from "./users/users.module";
 import { MongooseModule } from "@nestjs/mongoose";
 import { AuthModule } from './auth/auth.module';
@@ -11,6 +9,7 @@ import { ProductsModule } from './products/products.module';
 import { MailerModule } from "@nestjs-modules/mailer";
 import { CartModule } from './cart/cart.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { OrdersModule } from './orders/orders.module';
 
 
 @Module({
@@ -24,7 +23,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
         pass:config.GMAIL_PASS
       }
     }
-  }) ,ProductsModule, CartModule, CloudinaryModule],
+  }) ,ProductsModule, CartModule, CloudinaryModule, OrdersModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -4,7 +4,7 @@
 
 # keys
 /src/config/*
-
+/src/config/keys.ts
 # Logs
 logs
 *.log

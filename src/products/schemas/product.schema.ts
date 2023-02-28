@@ -3,26 +3,26 @@ import { Document } from "mongoose";
 
 export type ProductDocument = Product & Document;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Product {
-  @Prop()
+  @Prop({ type: String })
   name: string;
 
-  @Prop()
+  @Prop({ type: String })
   description: string;
 
-  @Prop()
+  @Prop({ type: String })
   actualprice: number;
 
-  @Prop({ max: 100, min: 0, default: 0 })
+  @Prop({ type: Number, max: 100, min: 0, default: 0 })
   discountpercent: number;
 
   // @Prop()
   // discountprice: number;
-  @Prop()
-  productimageurl:string;
+  @Prop({ type: String })
+  productimageurl: string;
 
-  @Prop()
+  @Prop({ type: Array })
   category: [string];
 }
 
